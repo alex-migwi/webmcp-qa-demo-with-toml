@@ -1,0 +1,68 @@
+# Strategy A: Magic Class (All public methods become tools)
+[[tools]]
+class = "UserService"
+mode = "auto"  
+# "auto" = all methods, "explicit" = only listed methods
+
+# Strategy B: Explicit Functions
+[[tools]]
+class = "PaymentService"
+mode = "explicit"
+methods = ["processPayment", "refund", "applyDiscount"]
+# Optional: Override descriptions for better AI understanding
+[tools.description_overrides]
+processPayment = "Process a credit card payment securely"
+refund = "Issue a refund for a completed transaction"   
+applyDiscount = "Apply a percentage discount to a payment amount"
+
+# --- Test Plan Definitions ---
+
+# Suite 1: Passing Auth Flow
+[[tests]]
+name = "auth_flow_validation"
+description = "Verify login success, profile retrieval, and logout cleanup."
+steps = [
+  { tool = "userservice_login", args = { user = "test@example.com", pass = "ValidPass123" }, assert = { success = true } },
+  { tool = "userservice_getprofile", args = {}, assert = { name = "Test User" } },
+  { tool = "userservice_logout", args = {}, assert = { success = true } }
+]
+
+# Suite 2: Passing Error Handling
+[[tests]]
+name = "payment_error_handling"
+description = "Ensure payment fails gracefully with invalid card."
+steps = [
+  { tool = "paymentservice_processpayment", args = { amount = 100, card = "00000000" }, assert = { error = "Invalid Card" } }
+]
+
+# Suite 3: Intentional Failure - Buggy Discount Function in PaymentService
+[[tests]]
+name = "payment_buggy_discount_test"
+description = "Intentional Bug Test: Buggy applyDiscount in PaymentService calculates $200 - 15 = $185 instead of 200 * 0.85 = $170."
+steps = [
+  { tool = "paymentservice_applydiscount", args = { amount = 200, discountPercent = 15 }, assert = { finalAmount = 170 } }
+]
+
+# Suite 4: Intentional Failure - Missing / Unregistered Tool in UserService
+[[tests]]
+name = "userservice_missing_tool_test"
+description = "Intentional Failure Test: Invoking deleteAccount tool which is missing/unregistered in UserService."
+steps = [
+  { tool = "userservice_deleteaccount", args = { id = "user_99" }, assert = { success = true } }
+]
+
+# Suite 5: Intentional Failure - Mismatched Input Validation
+[[tests]]
+name = "negative_payment_validation"
+description = "Intentional Failure Test: Processing negative payment amounts should be rejected."
+steps = [
+  { tool = "paymentservice_processpayment", args = { amount = -50, card = "411111111111" }, assert = { error = "Amount must be greater than zero" } }
+]
+
+# Suite 6: Intentional Failure - Missing Required Argument Validation
+[[tests]]
+name = "missing_auth_param_validation"
+description = "Intentional Failure Test: Login without username should trigger input error."
+steps = [
+  { tool = "userservice_login", args = { pass = "SecretPass123" }, assert = { error = "Username is required" } }
+]

@@ -1,0 +1,36 @@
+# Strategy A: Magic Class (All public methods become tools)
+[[tools]]
+class = "UserService"
+mode = "auto"  
+# "auto" = all methods, "explicit" = only listed methods
+
+# Strategy B: Explicit Functions
+[[tools]]
+class = "PaymentService"
+mode = "explicit"
+methods = ["processPayment", "refund"]
+# Optional: Override descriptions for better AI understanding
+[tools.description_overrides]
+processPayment = "Process a credit card payment securely"
+refund = "Issue a refund for a completed transaction"   
+
+
+
+
+
+# Test Plan Definition
+[[tests]]
+name = "auth_flow_validation"
+description = "Verify login success, profile retrieval, and logout cleanup."
+steps = [
+  { tool = "userservice_login", args = { user = "test@example.com", pass = "ValidPass123" }, assert = { success = true } },
+  { tool = "userservice_getprofile", args = {}, assert = { name = "Test User" } },
+  { tool = "userservice_logout", args = {}, assert = { success = true } }
+]
+
+[[tests]]
+name = "payment_error_handling"
+description = "Ensure payment fails gracefully with invalid card."
+steps = [
+  { tool = "paymentservice_processpayment", args = { amount = 100, card = "00000000" }, assert = { error = "Invalid Card" } }
+]   
