@@ -171,7 +171,7 @@ npm run test:lm-studio
 
 ### Option B: Cloud LLM via Google Gemini API
 
-Run QA evaluation using Google's Gemini models (`gemini-1.5-flash`):
+Run QA evaluation using Google's Gemini models (`gemini-3.5-flash`):
 
 1. Set your Gemini API Key in your environment:
 
