@@ -1,7 +1,11 @@
 (window as any).global = window;
 
 import { installWebMcpPolyfill } from 'ng-webmcp/testing';
-installWebMcpPolyfill();
+
+const useWebMcpPolyfill = new URLSearchParams(window.location.search).has('webmcpPolyfill');
+if (useWebMcpPolyfill) {
+  installWebMcpPolyfill();
+}
 
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
