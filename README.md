@@ -32,7 +32,7 @@ An experimental Angular standalone application demonstrating **WebMCP (Web Model
 The **Web Model Context Protocol (WebMCP)** allows web applications to expose native functions directly to AI assistants operating in or alongside the browser. 
 
 This repository provides:
-1. **Dynamic Service Ingestion**: An Angular `APP_INITIALIZER` (`provideWebMcpTomlLoader`) that reads `webmcp-tools.toml` and automatically registers Angular `@Injectable()` service methods into `navigator.modelContext`.
+1. **Dynamic Service Ingestion**: An Angular `provideAppInitializer` (`provideWebMcpTomlLoader`) that reads `webmcp-tools.toml` and automatically registers Angular `@Injectable()` service methods into `navigator.modelContext`.
 2. **Browser Polyfill Support**: Fallback handling for environments lacking native `navigator.modelContext`.
 3. **Autonomous AI QA Test Runners**: Scripts (`runner.js` and `runner-gemini.js`) that fetch the declarative test plan, invoke WebMCP tools, analyze assertion matches, detect bugs, and automatically suggest TypeScript and TOML code fixes.
 
